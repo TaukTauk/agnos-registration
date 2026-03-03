@@ -22,8 +22,6 @@ agnos-registration/
 │   │   │   │   └── page.tsx        ← Patient registration route
 │   │   │   ├── staff/
 │   │   │   │   └── page.tsx        ← Staff dashboard route
-│   │   │   ├── not-found.tsx       ← Locale-level 404 with own provider
-│   │   │   └── error.tsx           ← Error boundary (static text, no provider)
 │   │   ├── not-found.tsx           ← Root-level 404 fallback for unmatched URLs
 │   │   ├── layout.tsx              ← Root HTML shell (lang, body, fonts)
 │   │   └── globals.css             ← Global styles + animation keyframes

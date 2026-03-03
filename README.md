@@ -129,8 +129,6 @@ agnos-registration/
 │   │   │   ├── page.tsx            ← Home — links to patient + staff
 │   │   │   ├── patient/page.tsx    ← Patient registration form
 │   │   │   ├── staff/page.tsx      ← Staff dashboard
-│   │   │   ├── not-found.tsx       ← Custom 404
-│   │   │   └── error.tsx           ← Custom error boundary
 │   │   ├── not-found.tsx           ← Root 404 fallback
 │   │   ├── layout.tsx              ← Root HTML layout
 │   │   └── globals.css
