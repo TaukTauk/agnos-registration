@@ -109,6 +109,7 @@
 	  "showing": "แสดง",
 	  "of": "จาก",
 	  "patients": "ผู้ป่วย",
+	  "submitted_at": "ส่งเมื่อ",
 	  "table": {
 	    "patient": "ผู้ป่วย",
 	    "status": "สถานะ",
@@ -119,7 +120,8 @@
 	    "last_activity": "กิจกรรมล่าสุด",
 	    "actions": "การดำเนินการ",
 	    "anonymous": "นิรนาม",
-	    "pdf": "PDF"
+	    "pdf": "PDF",
+		"submitted_at": "ส่งเมื่อ"
 	  }
 	},
 	"error": {

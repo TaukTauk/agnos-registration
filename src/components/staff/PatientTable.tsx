@@ -88,6 +88,9 @@ export default function PatientTable({ sessions }: PatientTableProps) {
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{t('staff.table.language')}</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{t('staff.table.session_time')}</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{t('staff.table.last_activity')}</th>
+			  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+				  {t('staff.table.submitted_at')}
+				</th>
               <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{t('staff.table.actions')}</th>
             </tr>
           </thead>
@@ -151,6 +154,20 @@ export default function PatientTable({ sessions }: PatientTableProps) {
                   <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-xs">
                     {formatDateTime(session.last_activity_at)}
                   </td>
+
+				  {/* Submitted at */}
+					<td className="px-4 py-3 text-xs whitespace-nowrap">
+					  {session.submitted_at ? (
+					    <div className="flex items-center gap-1.5 text-green-600">
+					      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+					      </svg>
+					      {new Date(session.submitted_at).toLocaleString()}
+					    </div>
+					  ) : (
+					    <span className="text-gray-300 italic">—</span>
+					  )}
+					</td>
 
                   {/* Actions */}
                   <td className="px-4 py-3">

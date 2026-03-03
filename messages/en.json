@@ -109,6 +109,7 @@
 	  "showing": "Showing",
 	  "of": "of",
 	  "patients": "patients",
+	  "submitted_at": "Submitted at",
 	  "table": {
 	    "patient": "Patient",
 	    "status": "Status",
@@ -119,7 +120,8 @@
 	    "last_activity": "Last Activity",
 	    "actions": "Actions",
 	    "anonymous": "Anonymous",
-	    "pdf": "PDF"
+	    "pdf": "PDF",
+		"submitted_at": "Submitted At"
 	  }
 	},
 	"error": {
