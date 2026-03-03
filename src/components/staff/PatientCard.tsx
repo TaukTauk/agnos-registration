@@ -1,19 +1,24 @@
 'use client'
 
+import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { PatientSession } from '@/types/patient'
 import { getActivityStatus, formatDateTime } from '@/lib/utils'
 import StatusBadge from '@/components/ui/StatusBadge'
 import FieldRow from './FieldRow'
 import SessionTimer from './SessionTimer'
-import { useRef } from 'react'
+import SessionActions from './SessionActions'
 import jsPDF from 'jspdf'
+import type { ToastType } from '@/components/ui/Toast'
 
 interface PatientCardProps {
   session: PatientSession
+  onExpired?: (sessionId: string) => void
+  onDeleted?: (sessionId: string) => void
+  onToast?: (type: ToastType, title: string, description?: string) => void
 }
 
-export default function PatientCard({ session }: PatientCardProps) {
+export default function PatientCard({ session, onExpired, onDeleted, onToast }: PatientCardProps) {
   const t = useTranslations()
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -24,7 +29,6 @@ export default function PatientCard({ session }: PatientCardProps) {
     const margin = 20
     let y = margin
 
-    // Header
     doc.setFontSize(18)
     doc.setTextColor(37, 99, 235)
     doc.text('Agnos Smart Registration', margin, y)
@@ -39,7 +43,6 @@ export default function PatientCard({ session }: PatientCardProps) {
     doc.text(`Session ID: ${session.session_id}`, margin, y)
     y += 12
 
-    // Divider
     doc.setDrawColor(200, 200, 200)
     doc.line(margin, y, 210 - margin, y)
     y += 10
@@ -49,7 +52,6 @@ export default function PatientCard({ session }: PatientCardProps) {
       doc.setTextColor(37, 99, 235)
       doc.text(title, margin, y)
       y += 7
-
       doc.setFontSize(10)
       fields.forEach(([label, value]) => {
         doc.setTextColor(100, 100, 100)
@@ -68,37 +70,33 @@ export default function PatientCard({ session }: PatientCardProps) {
       ['Date of Birth', session.date_of_birth],
       ['Gender', session.gender],
     ])
-
     addSection('Contact Information', [
       ['Phone', session.phone],
       ['Email', session.email],
       ['Address', session.address],
     ])
-
     addSection('Additional Information', [
       ['Nationality', session.nationality],
       ['Preferred Language', session.preferred_language],
       ['Religion', session.religion],
     ])
-
     addSection('Emergency Contact', [
       ['Name', session.emergency_name],
       ['Relationship', session.emergency_relationship],
     ])
 
-    // Status footer
-    doc.setDrawColor(200, 200, 200)
-    doc.line(margin, y, 210 - margin, y)
-    y += 8
-    doc.setFontSize(10)
-    doc.setTextColor(100, 100, 100)
-    doc.text(`Status: ${currentStatus.toUpperCase()}`, margin, y)
     if (session.submitted_at) {
-      y += 6
+      y += 4
+      doc.setDrawColor(200, 200, 200)
+      doc.line(margin, y, 210 - margin, y)
+      y += 8
+      doc.setFontSize(10)
+      doc.setTextColor(100, 100, 100)
       doc.text(`Submitted At: ${new Date(session.submitted_at).toLocaleString()}`, margin, y)
     }
 
     doc.save(`patient-${session.session_id}.pdf`)
+    onToast?.('success', t('toast.pdf_exported'), `patient-${session.session_id}.pdf`)
   }
 
   const fields: [string, string | null][] = [
@@ -123,7 +121,8 @@ export default function PatientCard({ session }: PatientCardProps) {
       className={`
         bg-white rounded-2xl border shadow-sm overflow-hidden transition-all duration-300
         ${currentStatus === 'submitted' ? 'border-green-200' :
-          currentStatus === 'inactive' ? 'border-red-100' :
+          currentStatus === 'inactive' ? 'border-orange-100' :
+          currentStatus === 'expired' ? 'border-gray-100' :
           'border-blue-100'}
       `}
     >
@@ -131,23 +130,26 @@ export default function PatientCard({ session }: PatientCardProps) {
       <div className={`
         px-4 py-3 flex items-center justify-between
         ${currentStatus === 'submitted' ? 'bg-green-50' :
-          currentStatus === 'inactive' ? 'bg-red-50' :
+          currentStatus === 'inactive' ? 'bg-orange-50' :
+          currentStatus === 'expired' ? 'bg-gray-50' :
           'bg-blue-50'}
       `}>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-800">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-gray-800 truncate">
               {session.first_name && session.last_name
-				  ? `${session.first_name} ${session.last_name}`
-				  : t('staff.anonymous')}
+                ? `${session.first_name} ${session.last_name}`
+                : t('staff.anonymous')}
             </p>
-            <p className="text-xs text-gray-400 font-mono">{session.session_id.slice(0, 20)}...</p>
+            <p className="text-xs text-gray-400 font-mono truncate">
+              {session.session_id.slice(0, 20)}...
+            </p>
           </div>
         </div>
         <StatusBadge
@@ -186,33 +188,41 @@ export default function PatientCard({ session }: PatientCardProps) {
         ))}
       </div>
 
-      {/* Footer — Submitted time + Export */}
-		<div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between gap-2">
-		  {session.submitted_at ? (
-		    <div className="flex items-center gap-1.5 text-xs text-green-600">
-		      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-		        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-		          d="M5 13l4 4L19 7" />
-		      </svg>
-		      <span>
-		        {t('staff.submitted_at')} {new Date(session.submitted_at).toLocaleString()}
-		      </span>
-		    </div>
-		  ) : (
-		    <div />
-		  )}
-		  <button
-		    onClick={handleExportPDF}
-		    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors duration-200"
-		    aria-label="Export patient data as PDF"
-		  >
-		    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-		      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-		        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-		    </svg>
-		    {t('staff.export_pdf')}
-		  </button>
-		</div>
+      {/* Footer */}
+      <div className="px-4 py-3 border-t border-gray-100 space-y-2">
+        {/* Submitted time */}
+        {session.submitted_at && (
+          <div className="flex items-center gap-1.5 text-xs text-green-600">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{t('staff.submitted_at')} {new Date(session.submitted_at).toLocaleString()}</span>
+          </div>
+        )}
+
+        {/* Actions row */}
+        <div className="flex items-center justify-between gap-2">
+          {/* PDF export */}
+          <button
+            onClick={handleExportPDF}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors duration-200"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {t('staff.export_pdf')}
+          </button>
+
+          {/* Expire + Delete */}
+          <SessionActions
+            session={session}
+            onExpired={onExpired}
+            onDeleted={onDeleted}
+            compact={true}
+          />
+        </div>
+      </div>
     </div>
   )
 }

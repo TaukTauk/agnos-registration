@@ -8,6 +8,8 @@ import PatientCard from './PatientCard'
 import PatientTable from './PatientTable'
 import DashboardFilters from './DashboardFilters'
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
+import { ToastContainer } from '@/components/ui/Toast'
+import { useToast } from '@/hooks/useToast'
 
 type ViewMode = 'card' | 'table'
 
@@ -28,6 +30,7 @@ export default function StaffDashboard() {
     gender: '',
     nationality: '',
   })
+  const { toasts, addToast, removeToast } = useToast()
 
   // Initial fetch
   useEffect(() => {
@@ -45,33 +48,44 @@ export default function StaffDashboard() {
 
   // Realtime subscription
   useEffect(() => {
-    const channel = supabase
-      .channel('patient_sessions_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'patient_sessions' },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setSessions((prev) => [payload.new as PatientSession, ...prev])
-          } else if (payload.eventType === 'UPDATE') {
-            setSessions((prev) =>
-              prev.map((s) =>
-                s.session_id === (payload.new as PatientSession).session_id
-                  ? (payload.new as PatientSession)
-                  : s
-              )
-            )
-          } else if (payload.eventType === 'DELETE') {
-            setSessions((prev) =>
-              prev.filter((s) => s.session_id !== (payload.old as PatientSession).session_id)
-            )
-          }
-        }
-      )
-      .subscribe()
+	  const channel = supabase
+	    .channel('patient_sessions_changes')
+	    .on(
+	      'postgres_changes',
+	      { event: '*', schema: 'public', table: 'patient_sessions' },
+	      (payload) => {
+	        if (payload.eventType === 'INSERT') {
+	          const newSession = payload.new as PatientSession
+	          setSessions((prev) => [newSession, ...prev])
+	          const name = newSession.first_name
+	            ? `${newSession.first_name} ${newSession.last_name ?? ''}`.trim()
+	            : t('staff.table.anonymous')
+	          addToast('info', t('toast.new_patient'), name)
+	        } else if (payload.eventType === 'UPDATE') {
+	          const updated = payload.new as PatientSession
+	          setSessions((prev) =>
+	            prev.map((s) =>
+	              s.session_id === updated.session_id ? updated : s
+	            )
+	          )
+	          // Notify when a patient submits
+	          if (updated.status === 'submitted') {
+	            const name = updated.first_name
+	              ? `${updated.first_name} ${updated.last_name ?? ''}`.trim()
+	              : t('staff.table.anonymous')
+	            addToast('success', t('toast.patient_submitted'), name)
+	          }
+	        } else if (payload.eventType === 'DELETE') {
+	          setSessions((prev) =>
+	            prev.filter((s) => s.session_id !== (payload.old as PatientSession).session_id)
+	          )
+	        }
+	      }
+	    )
+	    .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
-  }, [])
+	  return () => { supabase.removeChannel(channel) }
+	}, [addToast, t])
 
   // Auto-expire inactive sessions every minute
   useEffect(() => {
@@ -140,6 +154,20 @@ export default function StaffDashboard() {
 
   const hasResults = filteredActive.length > 0 || filteredSubmitted.length > 0 || filteredExpired.length > 0
   const hasActiveFilters = filters.search !== '' || filters.gender !== '' || filters.nationality !== ''
+
+  const handleSessionExpired = (sessionId: string) => {
+	  setSessions((prev) =>
+	    prev.map((s) =>
+	      s.session_id === sessionId ? { ...s, status: 'expired' as const } : s
+	    )
+	  )
+	  addToast('warning', t('toast.session_expired'))
+	}
+
+	const handleSessionDeleted = (sessionId: string) => {
+	  setSessions((prev) => prev.filter((s) => s.session_id !== sessionId))
+	  addToast('error', t('toast.session_deleted'))
+	}
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -269,14 +297,25 @@ export default function StaffDashboard() {
                       {t('staff.active_sessions')} ({filteredActive.length})
                     </h2>
                     {viewMode === 'table' ? (
-                      <PatientTable sessions={filteredActive} />
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {filteredActive.map((session) => (
-                          <PatientCard key={session.session_id} session={session} />
-                        ))}
-                      </div>
-                    )}
+					  <PatientTable
+					    sessions={filteredActive}
+					    onExpired={handleSessionExpired}
+					    onDeleted={handleSessionDeleted}
+						onToast={addToast}
+					  />
+					) : (
+					  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+					    {filteredActive.map((session) => (
+					      <PatientCard
+					        key={session.session_id}
+					        session={session}
+					        onExpired={handleSessionExpired}
+					        onDeleted={handleSessionDeleted}
+							onToast={addToast}
+					      />
+					    ))}
+					  </div>
+					)}
                   </section>
                 )}
 
@@ -288,14 +327,25 @@ export default function StaffDashboard() {
                       {t('staff.submitted_sessions')} ({filteredSubmitted.length})
                     </h2>
                     {viewMode === 'table' ? (
-                      <PatientTable sessions={filteredSubmitted} />
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {filteredSubmitted.map((session) => (
-                          <PatientCard key={session.session_id} session={session} />
-                        ))}
-                      </div>
-                    )}
+					  <PatientTable
+					    sessions={filteredSubmitted}
+					    onExpired={handleSessionExpired}
+					    onDeleted={handleSessionDeleted}
+						onToast={addToast}
+					  />
+					) : (
+					  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+					    {filteredSubmitted.map((session) => (
+					      <PatientCard
+					        key={session.session_id}
+					        session={session}
+					        onExpired={handleSessionExpired}
+					        onDeleted={handleSessionDeleted}
+							onToast={addToast}
+					      />
+					    ))}
+					  </div>
+					)}
                   </section>
                 )}
 
@@ -318,16 +368,27 @@ export default function StaffDashboard() {
                     </button>
 
                     {showExpired && (
-                      viewMode === 'table' ? (
-                        <PatientTable sessions={filteredExpired} />
-                      ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 opacity-60">
-                          {filteredExpired.map((session) => (
-                            <PatientCard key={session.session_id} session={session} />
-                          ))}
-                        </div>
-                      )
-                    )}
+					  viewMode === 'table' ? (
+					    <PatientTable
+					      sessions={filteredExpired}
+					      onExpired={handleSessionExpired}
+					      onDeleted={handleSessionDeleted}
+						  onToast={addToast}
+					    />
+					  ) : (
+					    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 opacity-60">
+					      {filteredExpired.map((session) => (
+					        <PatientCard
+					          key={session.session_id}
+					          session={session}
+					          onExpired={handleSessionExpired}
+					          onDeleted={handleSessionDeleted}
+							  onToast={addToast}
+					        />
+					      ))}
+					    </div>
+					  )
+					)}
                   </section>
                 )}
 
@@ -336,6 +397,7 @@ export default function StaffDashboard() {
           </>
         )}
       </main>
+	  <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   )
 }

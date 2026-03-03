@@ -6,12 +6,17 @@ import { getActivityStatus, formatDateTime } from '@/lib/utils'
 import StatusBadge from '@/components/ui/StatusBadge'
 import SessionTimer from './SessionTimer'
 import jsPDF from 'jspdf'
+import SessionActions from './SessionActions'
+import type { ToastType } from '@/components/ui/Toast'
 
 interface PatientTableProps {
   sessions: PatientSession[]
+  onExpired?: (sessionId: string) => void
+  onDeleted?: (sessionId: string) => void
+  onToast?: (type: ToastType, title: string, description?: string) => void
 }
 
-export default function PatientTable({ sessions }: PatientTableProps) {
+export default function PatientTable({ sessions, onExpired, onDeleted, onToast }: PatientTableProps) {
   const t = useTranslations()
 
   const handleExportPDF = (session: PatientSession) => {
@@ -73,6 +78,7 @@ export default function PatientTable({ sessions }: PatientTableProps) {
     ])
 
     doc.save(`patient-${session.session_id}.pdf`)
+	onToast?.('success', t('toast.pdf_exported'), `patient-${session.session_id}.pdf`)
   }
 
   return (
@@ -171,18 +177,28 @@ export default function PatientTable({ sessions }: PatientTableProps) {
 
                   {/* Actions */}
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleExportPDF(session)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors duration-200 whitespace-nowrap"
-                      aria-label={`Export PDF for ${name}`}
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      {t('staff.table.pdf')}
-                    </button>
-                  </td>
+					  <div className="flex items-center gap-1.5">
+					    {/* PDF */}
+					    <button
+					      onClick={() => handleExportPDF(session)}
+					      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors duration-200 whitespace-nowrap"
+					    >
+					      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+					          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+					      </svg>
+					      {t('staff.table.pdf')}
+					    </button>
+
+					    {/* Expire + Delete */}
+					    <SessionActions
+					      session={session}
+					      onExpired={onExpired}
+					      onDeleted={onDeleted}
+					      compact={true}
+					    />
+					  </div>
+					</td>
                 </tr>
               )
             })}

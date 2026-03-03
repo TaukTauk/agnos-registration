@@ -78,7 +78,9 @@
 	  "save_changes": "Save changes",
 	  "fix_errors": "Please fix the errors above before submitting.",
 	  "install": "Install",
-	  "install_description": "Add Agnos to your home screen for quick access"
+	  "install_description": "Add Agnos to your home screen for quick access",
+	  "cancel": "Cancel",
+	  "confirm": "Confirm"
 	},
 	"staff": {
 	  "title": "Staff Dashboard",
@@ -122,7 +124,15 @@
 	    "anonymous": "Anonymous",
 	    "pdf": "PDF",
 		"submitted_at": "Submitted At"
-	  }
+	  },
+	  "actions": {
+		  "expire": "Expire",
+		  "delete": "Delete",
+		  "expire_title": "Mark as Expired?",
+		  "expire_description": "This session will be moved to the expired section. The patient will not be able to continue filling the form.",
+		  "delete_title": "Delete Session?",
+		  "delete_description": "This will permanently delete all patient data for this session. This action cannot be undone."
+		}
 	},
 	"error": {
 	    "not_found_title": "Page Not Found",
@@ -131,5 +141,12 @@
 	    "error_title": "Something Went Wrong",
 	    "error_description": "An unexpected error occurred. Please try again.",
 	    "try_again": "Try Again"
-	  }
+	  },
+	"toast": {
+	  "new_patient": "New patient arrived",
+	  "patient_submitted": "Patient submitted registration",
+	  "session_expired": "Session marked as expired",
+	  "session_deleted": "Session deleted",
+	  "pdf_exported": "PDF exported successfully"
+	}
 }
