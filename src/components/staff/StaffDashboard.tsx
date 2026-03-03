@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { supabase } from '@/lib/supabase'
 import { PatientSession } from '@/types/patient'
@@ -31,6 +31,18 @@ export default function StaffDashboard() {
     nationality: '',
   })
   const { toasts, addToast, removeToast } = useToast()
+
+  // Auto-switch to card view on mobile
+	useEffect(() => {
+	  const checkMobile = () => {
+	    if (window.innerWidth < 768) {
+	      setViewMode('card')
+	    }
+	  }
+	  checkMobile()
+	  window.addEventListener('resize', checkMobile)
+	  return () => window.removeEventListener('resize', checkMobile)
+	}, [])
 
   // Initial fetch
   useEffect(() => {
@@ -174,66 +186,70 @@ export default function StaffDashboard() {
 
       {/* Header */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
-	        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-			<a href="/">
-	          <div className="flex items-center gap-3">
-		            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-		              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-		                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-		                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-		              </svg>
-		            </div>
-	            <div>
-	              <h1 className="text-sm font-bold text-gray-900">{t('staff.title')}</h1>
-	              <p className="text-xs text-gray-400">{t('staff.subtitle')}</p>
-	            </div>
-	          </div>
-			  </a>
+		  <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-	          <div className="flex items-center gap-3">
-	            {/* Live indicator */}
-	            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-100">
-	              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-	              <span className="text-xs font-medium text-green-700">{t('staff.live')}</span>
-	            </div>
+		    {/* Logo */}
+		    <a href="/">
+		      <div className="flex items-center gap-2">
+		        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
+		          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+		              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+		          </svg>
+		        </div>
+		        <div>
+		          <h1 className="text-sm font-bold text-gray-900">{t('staff.title')}</h1>
+		          <p className="text-xs text-gray-400 hidden sm:block">{t('staff.subtitle')}</p>
+		        </div>
+		      </div>
+		    </a>
 
-	            {/* Stats */}
-	            <div className="hidden sm:flex items-center gap-3 text-xs text-gray-500">
-	              <span><b className="text-blue-600">{activeSessions.length}</b> {t('staff.active')}</span>
-	              <span><b className="text-green-600">{submittedSessions.length}</b> {t('staff.submitted_count')}</span>
-	              <span><b className="text-gray-400">{expiredSessions.length}</b> {t('staff.expired_count')}</span>
-	            </div>
+		    {/* Right controls */}
+		    <div className="flex items-center gap-2">
 
-	            {/* View toggle */}
-	            <div className="flex items-center rounded-lg border border-gray-200 overflow-hidden">
-	              <button
-	                onClick={() => setViewMode('card')}
-	                className={`px-2.5 py-1.5 transition-colors duration-200 ${viewMode === 'card' ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 hover:text-gray-600'}`}
-	                aria-label="Card view"
-	                aria-pressed={viewMode === 'card'}
-	              >
-	                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-	                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-	                </svg>
-	              </button>
-	              <button
-	                onClick={() => setViewMode('table')}
-	                className={`px-2.5 py-1.5 transition-colors duration-200 ${viewMode === 'table' ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 hover:text-gray-600'}`}
-	                aria-label="Table view"
-	                aria-pressed={viewMode === 'table'}
-	              >
-	                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-	                    d="M3 10h18M3 14h18M10 6h4M10 18h4M3 6h4M3 18h4M17 6h4M17 18h4" />
-	                </svg>
-	              </button>
-	            </div>
+		      {/* Live + Stats — desktop only */}
+		      <div className="hidden md:flex items-center gap-3">
+		        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-100">
+		          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+		          <span className="text-xs font-medium text-green-700">{t('staff.live')}</span>
+		        </div>
+		        <div className="flex items-center gap-3 text-xs text-gray-500">
+		          <span><b className="text-blue-600">{activeSessions.length}</b> {t('staff.active')}</span>
+		          <span><b className="text-green-600">{submittedSessions.length}</b> {t('staff.submitted_count')}</span>
+		          <span><b className="text-gray-400">{expiredSessions.length}</b> {t('staff.expired_count')}</span>
+		        </div>
+		      </div>
 
-	            <LanguageSwitcher />
-	          </div>
-	        </div>
-      </header>
+		      {/* View toggle — always visible */}
+		      <div className="flex items-center rounded-lg border border-gray-200 overflow-hidden">
+		        <button
+		          onClick={() => setViewMode('card')}
+		          className={`px-2.5 py-1.5 transition-colors duration-200 ${viewMode === 'card' ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 hover:text-gray-600'}`}
+		          aria-label="Card view"
+		          aria-pressed={viewMode === 'card'}
+		        >
+		          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+		              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+		          </svg>
+		        </button>
+		        <button
+		          onClick={() => setViewMode('table')}
+		          className={`px-2.5 py-1.5 transition-colors duration-200 ${viewMode === 'table' ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 hover:text-gray-600'}`}
+		          aria-label="Table view"
+		          aria-pressed={viewMode === 'table'}
+		        >
+		          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+		              d="M3 10h18M3 14h18M10 6h4M10 18h4M3 6h4M3 18h4M17 6h4M17 18h4" />
+		          </svg>
+		        </button>
+		      </div>
+
+		      <LanguageSwitcher />
+		    </div>
+		  </div>
+		</header>
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
