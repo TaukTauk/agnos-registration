@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 export const patientSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
@@ -11,9 +12,15 @@ export const patientSchema = z.object({
   preferred_language: z.string().min(1, 'Preferred language is required'),
 
   phone: z
-    .string()
-    .min(1, 'Phone number is required')
-    .regex(/^[0-9+\-\s()]{7,20}$/, 'Invalid phone number'),
+  .string()
+  .min(1, 'Phone number is required')
+  .refine(
+    (val) => {
+      const phone = parsePhoneNumberFromString(val)
+      return phone?.isValid() ?? false
+    },
+    'Invalid phone number for the selected country'
+  ),
   email: z
     .string()
     .optional()
