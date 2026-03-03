@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "patient": "ลงทะเบียนผู้ป่วย",
+    "staff": "แดชบอร์ดเจ้าหน้าที่",
+    "home": "หน้าแรก"
+  },
+  "patient": {
+    "title": "ลงทะเบียนผู้ป่วย",
+    "subtitle": "กรุณากรอกข้อมูลของคุณด้านล่าง",
+    "sections": {
+      "personal": "ข้อมูลส่วนตัว",
+      "contact": "ข้อมูลการติดต่อ",
+      "additional": "ข้อมูลเพิ่มเติม",
+      "emergency": "ผู้ติดต่อฉุกเฉิน"
+    },
+    "fields": {
+      "first_name": "ชื่อ",
+      "middle_name": "ชื่อกลาง",
+      "last_name": "นามสกุล",
+      "date_of_birth": "วันเกิด",
+      "gender": "เพศ",
+      "nationality": "สัญชาติ",
+      "religion": "ศาสนา",
+      "preferred_language": "ภาษาที่ต้องการ",
+      "phone": "หมายเลขโทรศัพท์",
+      "email": "อีเมล",
+      "address": "ที่อยู่",
+      "emergency_name": "ชื่อผู้ติดต่อฉุกเฉิน",
+      "emergency_relationship": "ความสัมพันธ์"
+    },
+    "placeholders": {
+      "first_name": "กรอกชื่อของคุณ",
+      "middle_name": "กรอกชื่อกลาง (ถ้ามี)",
+      "last_name": "กรอกนามสกุลของคุณ",
+      "date_of_birth": "ปปปป-ดด-วว",
+      "nationality": "กรอกสัญชาติของคุณ",
+      "religion": "กรอกศาสนาของคุณ (ถ้ามี)",
+      "preferred_language": "เลือกภาษาที่ต้องการ",
+      "phone": "กรอกหมายเลขโทรศัพท์",
+      "email": "กรอกอีเมล (ถ้ามี)",
+      "address": "กรอกที่อยู่เต็ม",
+      "emergency_name": "กรอกชื่อผู้ติดต่อฉุกเฉิน (ถ้ามี)",
+      "emergency_relationship": "เช่น พ่อแม่ คู่สมรส (ถ้ามี)",
+	  "select_gender": "เลือกเพศ",
+      "select_nationality": "เลือกสัญชาติ",
+	  "select_religion": "เลือกศาสนา"
+    },
+    "gender_options": {
+      "male": "ชาย",
+      "female": "หญิง",
+      "other": "อื่นๆ",
+      "prefer_not": "ไม่ระบุ"
+    },
+    "optional": "ไม่บังคับ",
+    "required": "จำเป็น",
+    "submit": "ส่งการลงทะเบียน",
+    "submitting": "กำลังส่ง...",
+    "success": "ส่งการลงทะเบียนเรียบร้อยแล้ว!",
+    "progress": "ความคืบหน้า"
+  },
+  "status": {
+	  "filling": "กำลังกรอก",
+	  "inactive": "ไม่ได้ใช้งาน",
+	  "expired": "หมดเวลา",
+	  "submitted": "ส่งแล้ว"
+	},
+  "common": {
+	  "language": "ภาษา",
+	  "install_app": "ติดตั้งแอป",
+	  "optional": "ไม่บังคับ",
+	  "search_placeholder": "พิมพ์เพื่อค้นหา...",
+	  "no_results": "ไม่พบผลลัพธ์",
+	  "loading": "กำลังโหลด...",
+	  "close_window": "คุณสามารถปิดหน้าต่างนี้ได้",
+	  "edit_info": "แก้ไขข้อมูลของฉัน",
+	  "editing_banner": "คุณกำลังแก้ไขข้อมูลที่ส่งแล้ว การเปลี่ยนแปลงจะถูกบันทึกอัตโนมัติ",
+	  "done_editing": "แก้ไขเสร็จแล้ว",
+	  "save_changes": "บันทึกการเปลี่ยนแปลง",
+	  "fix_errors": "กรุณาแก้ไขข้อผิดพลาดด้านบนก่อนส่ง",
+	  "install": "ติดตั้ง",
+	  "install_description": "เพิ่ม Agnos ไปยังหน้าจอหลักเพื่อเข้าถึงได้รวดเร็ว"
+	},
+	"staff": {
+	  "title": "แดชบอร์ดเจ้าหน้าที่",
+	  "subtitle": "ติดตามการลงทะเบียนผู้ป่วยแบบเรียลไทม์",
+	  "no_patients": "ไม่มีเซสชันผู้ป่วยที่ใช้งาน",
+	  "no_patients_sub": "กำลังรอผู้ป่วยเริ่มการลงทะเบียน...",
+	  "session_timer": "ระยะเวลาเซสชัน",
+	  "last_activity": "กิจกรรมล่าสุด",
+	  "export_pdf": "ส่งออก PDF",
+	  "fields": "ข้อมูลผู้ป่วย",
+	  "empty_field": "ไม่ได้ระบุ",
+	  "expired_sessions": "เซสชันที่หมดเวลา",
+	  "edit_mode": "แก้ไขหลังจากส่งแล้ว",
+	  "loading_sessions": "กำลังโหลดเซสชัน...",
+	  "live": "สด",
+	  "active": "กำลังใช้งาน",
+	  "submitted_count": "ส่งแล้ว",
+	  "expired_count": "หมดเวลา",
+	  "active_sessions": "เซสชันที่ใช้งานอยู่",
+	  "submitted_sessions": "ส่งแล้ว",
+	  "no_filter_results": "ไม่มีผู้ป่วยที่ตรงกับตัวกรอง",
+	  "clear_filters": "ล้างตัวกรอง",
+	  "anonymous": "ผู้ป่วยนิรนาม",
+	  "search_name": "ค้นหาตามชื่อ...",
+	  "all_genders": "ทุกเพศ",
+	  "all_nationalities": "ทุกสัญชาติ",
+	  "clear": "ล้าง",
+	  "showing": "แสดง",
+	  "of": "จาก",
+	  "patients": "ผู้ป่วย",
+	  "table": {
+	    "patient": "ผู้ป่วย",
+	    "status": "สถานะ",
+	    "phone": "โทรศัพท์",
+	    "nationality": "สัญชาติ",
+	    "language": "ภาษา",
+	    "session_time": "เวลาเซสชัน",
+	    "last_activity": "กิจกรรมล่าสุด",
+	    "actions": "การดำเนินการ",
+	    "anonymous": "นิรนาม",
+	    "pdf": "PDF"
+	  }
+	},
+	"error": {
+	    "not_found_title": "ไม่พบหน้าที่คุณค้นหา",
+	    "not_found_description": "หน้าที่คุณกำลังค้นหาไม่มีอยู่ หรืออาจถูกย้ายไปแล้ว",
+	    "back_home": "กลับหน้าหลัก",
+	    "error_title": "เกิดข้อผิดพลาดบางอย่าง",
+	    "error_description": "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
+	    "try_again": "ลองใหม่อีกครั้ง"
+	  }
+}

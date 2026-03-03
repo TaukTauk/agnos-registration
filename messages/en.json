@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "patient": "Patient Registration",
+    "staff": "Staff Dashboard",
+    "home": "Home"
+  },
+  "patient": {
+    "title": "Patient Registration",
+    "subtitle": "Please fill in your information below",
+    "sections": {
+      "personal": "Personal Information",
+      "contact": "Contact Information",
+      "additional": "Additional Information",
+      "emergency": "Emergency Contact"
+    },
+    "fields": {
+      "first_name": "First Name",
+      "middle_name": "Middle Name",
+      "last_name": "Last Name",
+      "date_of_birth": "Date of Birth",
+      "gender": "Gender",
+      "nationality": "Nationality",
+      "religion": "Religion",
+      "preferred_language": "Preferred Language",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "address": "Address",
+      "emergency_name": "Emergency Contact Name",
+      "emergency_relationship": "Relationship"
+    },
+    "placeholders": {
+      "first_name": "Enter your first name",
+      "middle_name": "Enter your middle name (optional)",
+      "last_name": "Enter your last name",
+      "date_of_birth": "YYYY-MM-DD",
+      "nationality": "Enter your nationality",
+      "religion": "Enter your religion (optional)",
+      "preferred_language": "Select preferred language",
+      "phone": "Enter your phone number",
+      "email": "Enter your email (optional)",
+      "address": "Enter your full address",
+      "emergency_name": "Enter emergency contact name (optional)",
+      "emergency_relationship": "e.g. Parent, Spouse (optional)",
+	  "select_gender": "Select gender",
+	  "select_nationality": "Select nationality",
+	  "select_religion": "Select religion"
+    },
+    "gender_options": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "prefer_not": "Prefer not to say"
+    },
+    "optional": "Optional",
+    "required": "Required",
+    "submit": "Submit Registration",
+    "submitting": "Submitting...",
+    "success": "Registration submitted successfully!",
+    "progress": "Form completion"
+  },
+  "status": {
+	  "filling": "Filling in",
+	  "inactive": "Inactive",
+	  "expired": "Expired",
+	  "submitted": "Submitted"
+	},
+  "common": {
+	  "language": "Language",
+	  "install_app": "Install App",
+	  "optional": "Optional",
+	  "search_placeholder": "Type to search...",
+	  "no_results": "No results found",
+	  "loading": "Loading...",
+	  "close_window": "You may now close this window.",
+	  "edit_info": "Edit my information",
+	  "editing_banner": "You are editing your submitted registration. Changes are saved automatically.",
+	  "done_editing": "Done editing",
+	  "save_changes": "Save changes",
+	  "fix_errors": "Please fix the errors above before submitting.",
+	  "install": "Install",
+	  "install_description": "Add Agnos to your home screen for quick access"
+	},
+	"staff": {
+	  "title": "Staff Dashboard",
+	  "subtitle": "Real-time patient registration monitor",
+	  "no_patients": "No active patient sessions",
+	  "no_patients_sub": "Waiting for patients to start registration...",
+	  "session_timer": "Session Duration",
+	  "last_activity": "Last Activity",
+	  "export_pdf": "Export PDF",
+	  "fields": "Patient Information",
+	  "empty_field": "Not provided",
+	  "expired_sessions": "Expired Sessions",
+	  "edit_mode": "Editing after submission",
+	  "loading_sessions": "Loading sessions...",
+	  "live": "Live",
+	  "active": "active",
+	  "submitted_count": "submitted",
+	  "expired_count": "expired",
+	  "active_sessions": "Active Sessions",
+	  "submitted_sessions": "Submitted",
+	  "no_filter_results": "No patients match your filters",
+	  "clear_filters": "Clear filters",
+	  "anonymous": "Anonymous Patient",
+	  "search_name": "Search by name...",
+	  "all_genders": "All Genders",
+	  "all_nationalities": "All Nationalities",
+	  "clear": "Clear",
+	  "showing": "Showing",
+	  "of": "of",
+	  "patients": "patients",
+	  "table": {
+	    "patient": "Patient",
+	    "status": "Status",
+	    "phone": "Phone",
+	    "nationality": "Nationality",
+	    "language": "Language",
+	    "session_time": "Session Time",
+	    "last_activity": "Last Activity",
+	    "actions": "Actions",
+	    "anonymous": "Anonymous",
+	    "pdf": "PDF"
+	  }
+	},
+	"error": {
+	    "not_found_title": "Page Not Found",
+	    "not_found_description": "The page you are looking for does not exist.",
+	    "back_home": "Back to Home",
+	    "error_title": "Something Went Wrong",
+	    "error_description": "An unexpected error occurred. Please try again.",
+	    "try_again": "Try Again"
+	  }
+}
