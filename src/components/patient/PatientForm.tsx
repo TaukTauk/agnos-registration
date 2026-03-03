@@ -215,53 +215,53 @@ export default function PatientForm() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-		  <a href="/">
-	          <div className="flex items-center gap-2">
-	            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-	              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-	                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-	              </svg>
-	            </div>
-	            <span className="font-semibold text-gray-900 text-sm">Agnos</span>
-	          </div>
-		  </a>
-          <div className="flex items-center gap-2">
-            {/* Show submitted badge if editing after submit */}
-            {isEditingAfterSubmit && (
-              <StatusBadge status="submitted" label={tStatus('submitted')} />
-            )}
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </header>
+      {/* Sticky header + progress */}
+		<div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+		  {/* Header */}
+		  <header>
+		    <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+		      <a href="/">
+		        <div className="flex items-center gap-2">
+		          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+		            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+		                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+		            </svg>
+		          </div>
+		          <span className="font-semibold text-gray-900 text-sm">Agnos</span>
+		        </div>
+		      </a>
+		      <div className="flex items-center gap-2">
+		        {isEditingAfterSubmit && (
+		          <StatusBadge status="submitted" label={tStatus('submitted')} />
+		        )}
+		        <LanguageSwitcher />
+		      </div>
+		    </div>
+		  </header>
 
-      {/* Edit after submit banner */}
-      {isEditingAfterSubmit && (
-        <div className="bg-blue-50 border-b border-blue-100">
-          <div className="max-w-2xl mx-auto px-4 py-2 flex items-center justify-between">
-            <p className="text-xs text-blue-700">
-              {tCommon('editing_banner')}
-            </p>
-            <button
-              onClick={() => setIsEditingAfterSubmit(false)}
-              className="text-xs text-blue-600 font-semibold hover:underline"
-            >
-              {tCommon('done_editing')}
-            </button>
-          </div>
-        </div>
-      )}
+		  {/* Edit after submit banner */}
+		  {isEditingAfterSubmit && (
+		    <div className="bg-blue-50 border-t border-blue-100">
+		      <div className="max-w-2xl mx-auto px-4 py-2 flex items-center justify-between">
+		        <p className="text-xs text-blue-700">
+		          {tCommon('editing_banner')}
+		        </p>
+		        <button
+		          onClick={() => setIsEditingAfterSubmit(false)}
+		          className="text-xs text-blue-600 font-semibold hover:underline"
+		        >
+		          {tCommon('done_editing')}
+		        </button>
+		      </div>
+		    </div>
+		  )}
 
-      {/* Progress Bar */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-2xl mx-auto px-4 py-3">
-          <ProgressBar progress={progress} label={t('progress')} />
-        </div>
-      </div>
+		  {/* Progress Bar */}
+		  <div className="max-w-2xl mx-auto px-4 py-3 border-t border-gray-100">
+		    <ProgressBar progress={progress} label={t('progress')} />
+		  </div>
+		</div>
 
       {/* Form */}
       <main className="max-w-2xl mx-auto px-4 py-6">

@@ -4,6 +4,8 @@ A real-time patient registration system built for Agnos Health. Patients fill in
 
 **Live Demo:** [https://agnos-registration.vercel.app](https://agnos-registration.vercel.app)
 
+**Documentation:** For detailed development planning including project structure, UI/UX design decisions, component architecture, and real-time synchronization flow, see [DEVELOPMENT.md](./DEVELOPMENT.md).
+
 ---
 
 ## Features
@@ -15,6 +17,7 @@ A real-time patient registration system built for Agnos Health. Patients fill in
 - Post-submit editing — patients can correct mistakes after submitting
 - Progress bar showing form completion percentage
 - Client-side validation with helpful error messages
+- Phone number validation per country using libphonenumber-js (Google's libphonenumber)
 - Searchable dropdowns for nationality, country code, language, religion
 - All ASEAN countries included
 - Bilingual — English and Thai (ภาษาไทย)
@@ -44,6 +47,7 @@ A real-time patient registration system built for Agnos Health. Patients fill in
 | Supabase | Realtime database + RLS | ^2.98.0 |
 | React Hook Form | Form state management | ^7.71.2 |
 | Zod | Schema validation | ^4.3.6 |
+| libphonenumber-js | Per-country phone number validation | ^1.12.38 |
 | next-intl | Internationalization (EN/TH) | ^4.8.3 |
 | next-pwa | Progressive Web App | ^5.6.0 |
 | jsPDF | PDF export | ^4.2.0 |
@@ -303,6 +307,9 @@ Socket.io requires a persistent WebSocket server which is incompatible with Verc
 
 ### Why post-submit editing
 Locking the form on submit creates friction when patients make mistakes (wrong phone number, misspelled name). Allowing editing after submission while keeping the `submitted` status means staff always see the patient as confirmed, and the latest data is always correct. The status never reverts to `filling` during editing. `In real life, we need to think of it very carefully based on the situations. In this demo, I allowed it for better usage.`
+
+### Why libphonenumber-js for phone validation
+A simple regex like `/^[0-9+\-\s()]{7,20}$/` accepts almost anything and rejects nothing meaningful. `libphonenumber-js` is the JS port of Google's libphonenumber — the same library used by Android. It validates the number format against the specific country detected from the international dialing prefix (`+66` → Thailand, `+1` → US/Canada, etc.), so `+66812345678` passes but `+6612` fails. Since the form already stores phone numbers in full international format, this required only a 4-line change to the Zod schema.
 
 ### Why client-side auto-expire
 Supabase's `pg_cron` for scheduled jobs requires a paid plan. Instead, the staff dashboard runs an expiry check every 60 seconds, marking sessions inactive for 30+ minutes as `expired` via a batch update. This achieves the same result on the free tier with no backend infrastructure.
